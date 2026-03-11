@@ -90,6 +90,13 @@
       color: #444;
     }
 
+    /* These 3 lines were added */
+appearance: none;
+-webkit-appearance: none;
+background-image: url("data:image/svg+xml,...");
+background-repeat: no-repeat;
+background-position: right 12px center;
+
     /* ── Details row ── */
     .details {
       display: flex;
@@ -116,8 +123,22 @@
   <h1>🌤 Weather App</h1>
 
   <!-- Search -->
-  <div class="search">
-    <input type="text" id="cityInput" placeholder="Enter city name..." />
+ <div class="search">
+    <select id="cityInput">
+      <option value="">-- Select a city --</option>
+      <option value="Chennai">Chennai 🇮🇳</option>
+      <option value="Mumbai">Mumbai 🇮🇳</option>
+      <option value="Delhi">Delhi 🇮🇳</option>
+      <option value="Bangalore">Bangalore 🇮🇳</option>
+      <option value="Kolkata">Kolkata 🇮🇳</option>
+      <option value="Hyderabad">Hyderabad 🇮🇳</option>
+      <option value="London">London 🇬🇧</option>
+      <option value="New York">New York 🇺🇸</option>
+      <option value="Tokyo">Tokyo 🇯🇵</option>
+      <option value="Paris">Paris 🇫🇷</option>
+      <option value="Dubai">Dubai 🇦🇪</option>
+      <option value="Sydney">Sydney 🇦🇺</option>
+    </select>
     <button onclick="getWeather()">Go</button>
   </div>
 
