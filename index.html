@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App</title>
+  <style>
+    /* ── Reset & base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e8f4fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* ── Card ── */
+    .card {
+      padding: 30px;
+      width: 320px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* ── Search bar ── */
+    .search {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .search input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search input:focus {
+      border-color: #4aa8e8;
+    }
+
+    .search button {
+      padding: 10px 16px;
+      background: #4aa8e8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .search button:hover {
+      background: #2e8fc5;
+    }
+
+    /* ── Weather display ── */
+    .weather { display: none; }
+
+    .weather.show { display: block; }
+
+    .icon { font-size: 64px; margin: 10px 0; }
+
+    .temp {
+      font-size: 48px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .desc {
+      font-size: 16px;
+      color: #777;
+      margin: 6px 0 16px;
+      text-transform: capitalize;
+    }
+
+    .city-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    /* ── Details row ── */
+    .details {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #cce3f5;
+    }
+
+    .detail p { font-size: 12px; color: #999; }
+    .detail span { font-size: 15px; font-weight: 600; color: #333; }
+
+    /* ── Error & loading ── */
+    .message {
+      font-size: 14px;
+      color: #e74c3c;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🌤 Weather App</h1>
+
+  <!-- Search -->
+  <div class="search">
+    <input type="text" id="cityInput" placeholder="Enter city name..." />
+    <button onclick="getWeather()">Go</button>
+  </div>
+
+  <!-- Error message -->
+  <p class="message" id="errorMsg"></p>
+
+  <!-- Weather result -->
+  <div class="weather" id="weatherBox">
+    <p class="city-name" id="cityName"></p>
+    <div class="icon" id="weatherIcon"></div>
+    <div class="temp" id="temperature"></div>
+    <p class="desc" id="description"></p>
+
+    <div class="details">
+      <div class="detail">
+        <p>Humidity</p>
+        <span id="humidity">--</span>
+      </div>
+      <div class="detail">
+        <p>Wind</p>
+        <span id="wind">--</span>
+      </div>
+      <div class="detail">
+        <p>Feels Like</p>
+        <span id="feelsLike">--</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Your OpenWeatherMap API key ──
+  // Get a free key at: https://openweathermap.org/api
+  const API_KEY = "df5caef968c7779685bb20e6e121fd54";
+
+  async function getWeather() {
+    const city = document.getElementById("cityInput").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+    const weatherBox = document.getElementById("weatherBox");
+
+    // Clear old state
+    errorMsg.textContent = "";
+    weatherBox.classList.remove("show");
+
+    if (!city) {
+      errorMsg.textContent = "Please enter a city name.";
+      return;
+    }
+
+    // Demo mode (no API key needed)
+    if (API_KEY === "YOUR_API_KEY_HERE") {
+      showDemoWeather(city);
+      return;
+    }
+
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.cod !== 200) {
+        errorMsg.textContent = "City not found. Try again.";
+        return;
+      }
+
+      displayWeather(data);
+
+    } catch (err) {
+      errorMsg.textContent = "Something went wrong. Check your connection.";
+    }
+  }
+
+  function displayWeather(data) {
+    document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
+    document.getElementById("temperature").textContent = `${Math.round(data.main.temp)}°C`;
+    document.getElementById("description").textContent = data.weather[0].description;
+    document.getElementById("humidity").textContent = `${data.main.humidity}%`;
+    document.getElementById("wind").textContent = `${data.wind.speed} m/s`;
+    document.getElementById("feelsLike").textContent = `${Math.round(data.main.feels_like)}°C`;
+    document.getElementById("weatherIcon").textContent = getEmoji(data.weather[0].main);
+    document.getElementById("weatherBox").classList.add("show");
+  }
+
+  // Demo mode – shows fake data so beginners can test the UI
+  function showDemoWeather(city) {
+    const fake = {
+      name: city,
+      sys: { country: "IN" },
+      main: { temp: 28, humidity: 65, feels_like: 30 },
+      wind: { speed: 3.2 },
+      weather: [{ description: "partly cloudy", main: "Clouds" }]
+    };
+    displayWeather(fake);
+  }
+
+  // Pick an emoji based on weather condition
+  function getEmoji(condition) {
+    const map = {
+      Clear: "☀️",
+      Clouds: "⛅",
+      Rain: "🌧️",
+      Drizzle: "🌦️",
+      Thunderstorm: "⛈️",
+      Snow: "❄️",
+      Mist: "🌫️",
+      Fog: "🌫️",
+      Haze: "🌫️"
+    };
+    return map[condition] || "🌡️";
+  }
+
+  // Allow pressing Enter to search
+  document.getElementById("cityInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") getWeather();
+  });
+</script>
+
+</body>
+</html>
