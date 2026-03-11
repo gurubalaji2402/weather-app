@@ -50,6 +50,27 @@
       border-color: #4aa8e8;
     }
 
+    .search select {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      cursor: pointer;
+      color: #333;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .search select:focus {
+      border-color: #4aa8e8;
+    }
+
     .search button {
       padding: 10px 16px;
       background: #4aa8e8;
@@ -90,13 +111,6 @@
       color: #444;
     }
 
-    /* These 3 lines were added */
-appearance: none;
--webkit-appearance: none;
-background-image: url("data:image/svg+xml,...");
-background-repeat: no-repeat;
-background-position: right 12px center;
-
     /* ── Details row ── */
     .details {
       display: flex;
@@ -123,7 +137,7 @@ background-position: right 12px center;
   <h1>🌤 Weather App</h1>
 
   <!-- Search -->
- <div class="search">
+  <div class="search">
     <select id="cityInput">
       <option value="">-- Select a city --</option>
       <option value="Chennai">Chennai 🇮🇳</option>
@@ -172,10 +186,10 @@ background-position: right 12px center;
 <script>
   // ── Your OpenWeatherMap API key ──
   // Get a free key at: https://openweathermap.org/api
-  const API_KEY = "df5caef968c7779685bb20e6e121fd54";
+  const API_KEY = "aa60e25c8c57f418e04e5d0f00295fdf";
 
   async function getWeather() {
-    const city = document.getElementById("cityInput").value.trim();
+    const city = document.getElementById("cityInput").value;
     const errorMsg = document.getElementById("errorMsg");
     const weatherBox = document.getElementById("weatherBox");
 
@@ -184,7 +198,7 @@ background-position: right 12px center;
     weatherBox.classList.remove("show");
 
     if (!city) {
-      errorMsg.textContent = "Please enter a city name.";
+      errorMsg.textContent = "Please select a city.";
       return;
     }
 
@@ -250,10 +264,7 @@ background-position: right 12px center;
     return map[condition] || "🌡️";
   }
 
-  // Allow pressing Enter to search
-  document.getElementById("cityInput").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") getWeather();
-  });
+
 </script>
 
 </body>
