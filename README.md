@@ -117,4 +117,4 @@ No prior frontend experience needed. Just described what I wanted in plain Engli
 
 ---
 
-<p align="center">Made with ☁️ and vibes &nbsp;|&nbsp; Powered by <a href="https://claude.ai">Claude.ai</a></p>
+<p align="center">Made with vibe code</a></p>
